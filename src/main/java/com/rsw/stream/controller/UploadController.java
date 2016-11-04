@@ -74,7 +74,9 @@ public class UploadController {
                 // async invocation
                 Future<BlueResult> blueExec = blueDelegateService.performBlue(splitter.getStreamB(), upload.name);
 
-                // read entire input stream, feeding StreamA and StreamB threads
+                // Read the entire input stream, feeding StreamA and StreamB threads
+                // See the note in StreamSplitter regarding write blocking and exception handling
+
                 splitter.readToEof();
 
                 // wait for green thread to complete (Future.get() blocks)

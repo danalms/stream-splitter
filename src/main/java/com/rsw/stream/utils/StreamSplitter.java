@@ -13,6 +13,21 @@ import java.util.Arrays;
  * Provides two Pipe-based inputs from a single input.
  * This class manages the reading from the input and writing to one or two pipes
  *
+ * NOTE: pipe streams use a circular buffer of finite space, so the splitter will block on a write if:
+ *   - it has filled the buffer and has more input to write AND
+ *   - either consumer thread is not consuming the pipe, thereby not freeing up the pipe buffer space
+ * If a thread dies and its exception is uncaught, leaving its stream open, this blocked write could
+ * hang indefinitely.
+ * The easiest way to avoid this is to have the consuming services wrap all logic in a try/finally
+ * and close the input stream on any exception.
+ * Alternatively, it may be possible to override the exception handling behavior of the
+ * java.util.concurrent.FutureTask used by Spring's Async feature, but it may not be trivial.
+ * We want to use Future<> in this context to join the threads, but Spring does not accommodate an
+ * UnhandledExceptionHandler when using Future return types.  Use of the Future return type causes the
+ * exception to be held until when/if Future.get() is called.  This complicates things in the
+ * multi-thread stream write block scenario assuming the splitter run and the Future.get() are both
+ * in the main thread.
+ *
  * Created by DAlms on 10/30/16.
  */
 public class StreamSplitter {

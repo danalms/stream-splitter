@@ -41,37 +41,41 @@ public class BlueDelegateServiceImpl implements BlueDelegateService {
     @Async
     public Future<BlueResult> performBlue(InputStream fileInputStream, final String fileName) {
 
-        InputStreamResource contentsAsResource = new InputStreamResource(fileInputStream) {
-            @Override
-            public String getFilename() {
-                return fileName;
-            }
-
-            @Override
-            public long contentLength() throws IOException {
-                // Need to read the whole stream to get the length.
-                return -1;
-            }
-        };
-
-        MultiValueMap<String, Object> fields = new LinkedMultiValueMap<>();
-        fields.add("inputStream", contentsAsResource);
-        fields.add("fileName", fileName);
-        String url = "http://blue-service/file";
-
-        LOG.info(" :: sending file {} to Blue service...", fileName);
-        Stopwatch timer = Stopwatch.createStarted();
-
-        ResponseEntity<BlueResult> result = null;
         try {
+            InputStreamResource contentsAsResource = new InputStreamResource(fileInputStream) {
+                @Override
+                public String getFilename() {
+                    return fileName;
+                }
+
+                @Override
+                public long contentLength() throws IOException {
+                    // Need to read the whole stream to get the length.
+                    return -1;
+                }
+            };
+
+            MultiValueMap<String, Object> fields = new LinkedMultiValueMap<>();
+            fields.add("inputStream", contentsAsResource);
+            fields.add("fileName", fileName);
+            String url = "http://blue-service/file";
+
+            LOG.info(" :: sending file {} to Blue service...", fileName);
+            Stopwatch timer = Stopwatch.createStarted();
+
+            ResponseEntity<BlueResult> result = null;
             result = restTemplate.exchange(url, HttpMethod.POST,
-                    new HttpEntity<MultiValueMap<String, Object>>(fields), BlueResult.class);
+                        new HttpEntity<MultiValueMap<String, Object>>(fields), BlueResult.class);
+            timer.stop();
+            LOG.info(" :: Blue service completed in {} ms.", timer.elapsed(TimeUnit.MILLISECONDS));
+            return new AsyncResult<BlueResult>(result.getBody());
+        } catch (Exception e) {
+            LOG.error("Error invoking Blue delegate service", e);
+            throw e;
         } finally {
+            // Important to notify and unblock pipe writer thread!
             IOUtils.closeQuietly(fileInputStream);
         }
-        timer.stop();
-        LOG.info(" :: Blue service completed in {} ms.", timer.elapsed(TimeUnit.MILLISECONDS));
-        return new AsyncResult<BlueResult>(result.getBody());
     }
 
 }
