@@ -1,4 +1,4 @@
-package com.rsw.stream;
+package com.rsw.auth.stream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,4 +1,4 @@
-package com.rsw.stream;
+package com.rsw.auth.stream;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

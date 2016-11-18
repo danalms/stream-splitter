@@ -1,11 +1,11 @@
-package com.rsw.stream.controller;
+package com.rsw.auth.stream.controller;
 
 import com.google.common.base.Stopwatch;
-import com.rsw.stream.domain.BlueResult;
-import com.rsw.stream.domain.GreenResult;
-import com.rsw.stream.service.BlueDelegateService;
-import com.rsw.stream.service.GreenDelegateService;
-import com.rsw.stream.utils.StreamSplitter;
+import com.rsw.auth.stream.domain.GreenResult;
+import com.rsw.auth.stream.domain.BlueResult;
+import com.rsw.auth.stream.service.BlueDelegateService;
+import com.rsw.auth.stream.service.GreenDelegateService;
+import com.rsw.auth.stream.utils.StreamSplitter;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;

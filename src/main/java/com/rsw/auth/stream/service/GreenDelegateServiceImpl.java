@@ -1,7 +1,7 @@
-package com.rsw.stream.service;
+package com.rsw.auth.stream.service;
 
 import com.google.common.base.Stopwatch;
-import com.rsw.stream.domain.BlueResult;
+import com.rsw.auth.stream.domain.GreenResult;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,20 +26,20 @@ import java.util.concurrent.TimeUnit;
  * Generic delegate service which calls a remote service
  */
 @Service
-public class BlueDelegateServiceImpl implements BlueDelegateService {
+public class GreenDelegateServiceImpl implements GreenDelegateService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BlueDelegateServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GreenDelegateServiceImpl.class);
 
     private RestTemplate restTemplate;
 
     @Autowired
-    public BlueDelegateServiceImpl(RestTemplate restTemplate) {
+    public GreenDelegateServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     @Override
     @Async
-    public Future<BlueResult> performBlue(InputStream fileInputStream, final String fileName) {
+    public Future<GreenResult> performGreen(InputStream fileInputStream, final String fileName) {
 
         try {
             InputStreamResource contentsAsResource = new InputStreamResource(fileInputStream) {
@@ -58,19 +58,19 @@ public class BlueDelegateServiceImpl implements BlueDelegateService {
             MultiValueMap<String, Object> fields = new LinkedMultiValueMap<>();
             fields.add("inputStream", contentsAsResource);
             fields.add("fileName", fileName);
-            String url = "http://blue-service/file";
+            String url = "http://green-service/file";
 
-            LOG.info(" :: sending file {} to Blue service...", fileName);
+            LOG.info(" :: sending file {} to Green service...", fileName);
             Stopwatch timer = Stopwatch.createStarted();
 
-            ResponseEntity<BlueResult> result = null;
-            result = restTemplate.exchange(url, HttpMethod.POST,
-                        new HttpEntity<MultiValueMap<String, Object>>(fields), BlueResult.class);
+            ResponseEntity<GreenResult> result = null;
+                result = restTemplate.exchange(url, HttpMethod.POST,
+                            new HttpEntity<MultiValueMap<String, Object>>(fields), GreenResult.class);
             timer.stop();
-            LOG.info(" :: Blue service completed in {} ms.", timer.elapsed(TimeUnit.MILLISECONDS));
-            return new AsyncResult<BlueResult>(result.getBody());
+            LOG.info(" :: Green service completed in {} ms.", timer.elapsed(TimeUnit.MILLISECONDS));
+            return new AsyncResult<GreenResult>(result.getBody());
         } catch (Exception e) {
-            LOG.error("Error invoking Blue delegate service", e);
+            LOG.error("Error invoking Green service delegate", e);
             throw e;
         } finally {
             // Important to notify and unblock pipe writer thread!

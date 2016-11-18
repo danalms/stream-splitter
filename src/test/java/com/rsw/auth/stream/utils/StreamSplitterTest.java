@@ -1,4 +1,4 @@
-package com.rsw.stream.utils;
+package com.rsw.auth.stream.utils;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;

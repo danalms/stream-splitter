@@ -1,6 +1,6 @@
-package com.rsw.stream.service;
+package com.rsw.auth.stream.service;
 
-import com.rsw.stream.domain.BlueResult;
+import com.rsw.auth.stream.domain.BlueResult;
 
 import java.io.InputStream;
 import java.util.concurrent.Future;

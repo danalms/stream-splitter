@@ -1,4 +1,4 @@
-package com.rsw.stream.utils;
+package com.rsw.auth.stream.utils;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.util.Assert;
